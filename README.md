@@ -1,6 +1,6 @@
 # 🏛️ Automate the SDLC Paper Trail — From Discovery to UAT Sign-Off
 
-### Four AI skills that turn the four deliverable-heavy phases of a consulting SDLC engagement — research, requirements, architecture, and UAT readiness — from days of drafting-and-review into one adversarially-tested run each. They don't write your code. They make sure everything that has to be approved *before* code gets written survives scrutiny the first time.
+### 4 AI skills that turn the 4 deliverable-heavy phases of a SDLC — research, requirements, architecture, and UAT readiness — from days of drafting-and-review into one adversarially-tested run each. <br><br> They don't write your code. They make sure everything that has to be approved *before* code gets written survives scrutiny the first time.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Skills](https://img.shields.io/badge/skills-4-blue)]()
@@ -8,8 +8,8 @@
 [![Architecture](https://img.shields.io/badge/architecture-adversarial%20multi--agent-orange)]()
 [![Gatekeepers](https://img.shields.io/badge/human%20gatekeepers-0%20mid--draft-red)]()
 
-> A consulting SDLC engagement runs on four deliverables before a single line of code gets written: **research the problem, define the requirements, design the architecture, verify it's ready to test.** Each one normally costs days of senior time and at least one internal review cycle before it's fit to leave the building.
-> **These four skills automate the drafting and the adversarial review behind each one — not the sign-off decision itself.** A human still decides what to do with a HIGH/MEDIUM/LOW output or a BLOCK verdict. What these skills remove is the two-day wait to find out your first draft wasn't good enough to make that decision on.
+> A consulting SDLC engagement runs on four deliverables before a single line of code gets written: <br> **research the problem, define the requirements, design the architecture, verify it's ready to test.** <br> Each one normally costs days of senior time and at least one internal review cycle before it's fit to leave the building. <br>
+> **These four skills automate the drafting and the adversarial review behind each one — not the sign-off decision itself.** <br> A human still decides what to do with a HIGH/MEDIUM/LOW output or a BLOCK verdict. <br> What these skills remove is the two-day wait to find out your first draft wasn't good enough to make that decision on.
 
 ⭐ **Star this if you've ever burned two days on a first-draft BRD only to have it bounce back from review on page one.**
 
@@ -114,68 +114,14 @@ There are **two distinct architectures** in this repo, matching the two kinds of
 ### Architecture 1 — Draft, Attack, Repeat
 *(`deep-research`, `brd-fsd-design`, `tsd-design`)*
 
-Phase 1 — STORM Planning (in-context)
-→ Lock the outline / fixed Table of Contents
-→ Cast 3 personas, each with a distinct, non-overlapping lens
-│
-Phase 2 — Parallel Isolated Execution (3× independent sub-agents)
-→ Persona A drafts   │   Persona B drafts   │   Persona C drafts
-→ Each one gets its OWN tools, OWN context — no peeking
-│
-▼
-Phase 3 — The Hostile CRITIC (1× isolated sub-agent, blind review)
-→ Attacks the combined drafts: facts, logic, overlap, gaps
-→ Verdict: APPROVED  or  REJECTED (+ exact fixes required)
-│
-┌───────────────┴───────────────┐
-▼                               ▼
-APPROVED                        REJECTED
-│                               │
-│                    Phase 4 — The Rematch
-│                    → Rejected personas get a fresh shot
-│                    → CRITIC's feedback injected as ammo
-│                    → Back to Phase 3 (max 3 rounds)
-│                               │
-└───────────────┬───────────────┘
-▼
-Phase 5 — Synthesis (in-context)
-→ One final document, honestly labeled
-→ Confidence: HIGH / MEDIUM / LOW
-→ CRITIC's sign-off + unified sources
-→ Human decides what happens next
-
-
-vbnet
+![architecture 1](image/architecture1.png)
 
 **The one rule that can't be broken:** every persona and every review is its own tool call. Simulate a persona inline instead of actually spawning it, and the whole quality guarantee evaporates.
 
 ### Architecture 2 — Classify, Then Attack What's Already There
 *(`uat-plan-hostile-reviewer`)*
 
-Input — An existing plan/document (yours, a vendor's, a client's)
-│
-▼
-Phase 1 — Domain Applicability Pre-Check (in-context)
-→ Classify: Harmful-adjacent? Regulated-content? Multilingual?
-Human-escalation-capable?
-→ Conditional rules only activate where a flag is actually TRUE
-→ Prevents false-positive Critical findings on unrelated plans
-│
-▼
-Phase 2 — Lifecycle-Wide Red-Flag Scan (in-context)
-→ Scoping → Design → Sandbox → UAT Entry → Methodology →
-Validation → Execution/Governance → Exit Criteria
-→ Every item scored PRESENT / PARTIAL / MISSING / N-A
-→ Every finding cites the exact clause, or states NOT FOUND
-│
-▼
-Phase 3 — Verdict
-→ 2+ Critical findings → mandatory BLOCK, no exceptions
-→ Otherwise → CONDITIONAL PASS or PASS + prioritized fix list
-→ Human decides what to do with the verdict
-
-
-vbnet
+![architecture 2](image/architecture2.png)
 
 **The one rule that can't be broken here:** the Domain Pre-Check always runs *before* any conditional rule is scored — otherwise you're automating a "hostile review" that's hostile about the wrong things.
 
@@ -258,99 +204,95 @@ cp skills/deep_research.md               ~/.your-agent/skills/deep-research/SKIL
 cp skills/brd-fsd-design.md               ~/.your-agent/skills/brd-fsd-design/SKILL.md
 cp skills/tsd-design.md                   ~/.your-agent/skills/tsd-design/SKILL.md
 cp skills/uat-plan-hostile-reviewer.md    ~/.your-agent/skills/uat-plan-hostile-reviewer/SKILL.md
+```
+
 Built for Claude Agent Skills–style manifests and any orchestrator that exposes a delegate_task(goal, context, toolsets) primitive. uat-plan-hostile-reviewer doesn't require sub-agent delegation to function, but runs fine inside the same orchestrator as the other three.
 
-Usage
+## Usage
 No special syntax. Just describe what you need — each skill activates on natural-language triggers, and each one maps to a phase of the engagement.
 
-Discovery (deep-research — the AI casts its own experts)
-
-
-css
+### Discovery (deep-research — the AI casts its own experts)
 "Do a deep-research report comparing stablecoin settlement options for cross-border payroll."
-Requirements (brd-fsd-design — fixed Stakeholder/Compliance/Operator cast)
 
-
-css
+### Requirements (brd-fsd-design — fixed Stakeholder/Compliance/Operator cast)
 "I need a BRD/FSD for an automated invoice reconciliation system."
-Design / Architecture (tsd-design — feed it the output of brd-fsd-design)
 
-
-python
+### Design / Architecture (tsd-design — feed it the output of brd-fsd-design)
 "Here's the approved BRD/FSD [attached]. Generate the TSD / technical architecture document."
-Testing / UAT Readiness (uat-plan-hostile-reviewer — audit a plan you already have)
 
-
-css
+### Testing / UAT Readiness (uat-plan-hostile-reviewer — audit a plan you already have)
 "Here's our vendor's UAT plan for a new AI chatbot [attached]. Run a hostile review —
 tell me if it's actually ready, and cite exactly what's missing."
 Every drafting run produces one finished Markdown document — executive summary, CRITIC's sign-off, honest confidence tag, unified references. uat-plan-hostile-reviewer produces one verdict report — Domain Pre-Check results, phase-by-phase coverage map, cited findings, and a plain-language recommendation. Either way, what you get is something ready for your decision, not a decision already made for you.
 
-Repository Structure
+## Repository Structure
 
-bash
+```bash
 .
 ├── skills/deep_research.md                # Skill: Discovery-phase, self-casting research pipeline
 ├── skills/brd-fsd-design.md               # Skill: Requirements-phase BRD/FSD pipeline
 ├── skills/tsd-design.md                   # Skill: Design-phase Technical Spec pipeline (consumes BRD/FSD)
 ├── skills/uat-plan-hostile-reviewer.md    # Skill: Testing-phase, domain-aware hostile audit of UAT/project plans
 └── README.md
-What You Actually Get
+
+```
+## What You Actually Get
 Every deliverable these skills produce comes with receipts — the kind an engagement lead can hand to a client without a re-check, and the kind that make clear where automation stops and your judgment starts:
 
-✅ A CRITIC Sign-Off — a paper trail of exactly what got attacked and what got fixed (drafting skills)
-✅ A verdict with citations — every red-flag finding points at the exact clause in your plan, or states plainly that it's missing (uat-plan-hostile-reviewer)
-✅ An honest confidence tag or BLOCK/CONDITIONAL PASS/PASS verdict — never an auto-approval
-✅ Inline citations on every non-obvious claim, primary sources preferred
-✅ "Data gap" / "MISSING" flags instead of fabricated facts or assumed compliance
-✅ A Domain Applicability Pre-Check that keeps the audit honest about which risks actually apply to your project
-✅ Full traceability from requirement → build → test (brd-fsd-design / tsd-design)
-✅ A clear stopping point — every output ends with "here's what this is, here's how sure it is," and hands the actual decision to you
-FAQ
-"Is this a new methodology I have to sell to my client?"
+- ✅ A CRITIC Sign-Off — a paper trail of exactly what got attacked and what got fixed (drafting skills)
+- ✅ A verdict with citations — every red-flag finding points at the exact clause in your plan, or states plainly that it's missing (uat-plan-hostile-reviewer)
+- ✅ An honest confidence tag or BLOCK/CONDITIONAL PASS/PASS verdict — never an auto-approval
+- ✅ Inline citations on every non-obvious claim, primary sources preferred
+- ✅ "Data gap" / "MISSING" flags instead of fabricated facts or assumed compliance
+- ✅ A Domain Applicability Pre-Check that keeps the audit honest about which risks actually apply to your project
+- ✅ Full traceability from requirement → build → test (brd-fsd-design / tsd-design)
+- ✅ A clear stopping point — every output ends with "here's what this is, here's how sure it is," and hands the actual decision to you
+
+## FAQ
+### "Is this a new methodology I have to sell to my client?"
 No — it's the same four deliverables most SDLC-based consulting engagements already produce (research, BRD/FSD, TSD, UAT sign-off). This just automates how long each one takes to reach review-ready, and pre-survives the review cycle that usually eats the schedule.
 
-"Does 'automate' mean this replaces my judgment on the deliverable?"
+### "Does 'automate' mean this replaces my judgment on the deliverable?"
 No. What's automated is the drafting-and-adversarial-review cycle — the multi-day loop of draft, get reviewed, get told what's wrong, redraft. What's never automated is the decision to accept, reject, or act on the output. A HIGH-confidence research memo still needs you to decide what it means for the engagement. A BLOCK verdict on a UAT plan still needs you to decide how to raise it with the client.
 
-"Does this cover the whole SDLC, including build and deployment?"
+### "Does this cover the whole SDLC, including build and deployment?"
 No, and this is intentional, not a limitation to hide. It covers the four document-driven gates before build starts: Discovery, Requirements, Architecture, and UAT Readiness. It doesn't write, review, or deploy code. If your engagement also needs that covered, these four skills hand off cleanly into whatever dev/QA tooling you're already running.
 
-"Can't I just tell the model to review its own work carefully?"
+### "Can't I just tell the model to review its own work carefully?"
 You can ask. It won't disagree with itself. Self-review has zero adversarial pressure — it's the same context grading its own exam and giving itself full marks. That's the exact failure this repo exists to kill.
 
-"Why not just prompt 'act as three experts'?"
+### "Why not just prompt 'act as three experts'?"
 Because roleplaying shares one context, one memory, one set of biases. Three "perspectives" from the same context quietly converge into one voice within a few paragraphs. Real isolation — separate sub-agents, separate tool sessions — is the only way to guarantee they actually disagree when they should.
 
-"Why does deep-research invent its own personas while the other drafting skills don't?"
+### "Why does deep-research invent its own personas while the other drafting skills don't?"
 Because requirements and architecture are closed domains — every engagement benefits from the same Stakeholder/Compliance/Operator (or Technical Architect) lenses, so locking them removes guesswork. Discovery-phase research is an open domain — the right experts for a legal question aren't the right experts for a market-sizing question. So deep-research's planning phase looks at your specific topic first and designs the cast before any research begins.
 
-"Why doesn't uat-plan-hostile-reviewer use three personas and a rematch loop like the others?"
+### "Why doesn't uat-plan-hostile-reviewer use three personas and a rematch loop like the others?"
 Because it isn't drafting anything. A persona cast exists to generate multiple independent drafts that can then disagree with each other — there's no draft here, just an existing document being read cold. Its safeguard against sloppy review is different: a mandatory Domain Applicability Pre-Check, which stops it from manufacturing Critical findings about risks that were never applicable to the plan in front of it.
 
-"Can I chain all four across one engagement?"
+### "Can I chain all four across one engagement?"
 Yes — that's the intended use. deep-research for discovery, brd-fsd-design for requirements, tsd-design for architecture, uat-plan-hostile-reviewer before UAT starts. Draft under adversarial pressure at each phase, then audit the resulting test strategy under adversarial assumption before a single tester runs a single test case.
 
-"What if the CRITIC never approves?" (drafting skills)
+### "What if the CRITIC never approves?" (drafting skills)
 It gets 3 rounds to make its case. After that, the pipeline ships anyway — clearly labeled LOW confidence, with every unresolved objection listed in plain sight. It never auto-escalates itself to "approved."
 
-"What if uat-plan-hostile-reviewer blocks my plan and I don't agree?"
+### "What if uat-plan-hostile-reviewer blocks my plan and I don't agree?"
 Every Critical and High finding cites the exact evidence that triggered it. Fix the plan, or document why a finding doesn't apply, and re-submit for a fresh scan. The BLOCK is a recommendation with receipts, not an unappealable veto.
 
-"Can I run tsd-design on its own?"
+### "Can I run tsd-design on its own?"
 It expects an approved BRD/FSD and/or NFR document going in. Run brd-fsd-design first if you don't have one yet.
 
-Contributing
+## Contributing
 Issues and PRs welcome — especially:
 
-New domain-specific tuning for deep-research's persona-casting logic
-New fixed-structure variants (PRD, RFC, etc.) built on the drafting pipeline
-Sharper MECE / over-engineering detection heuristics
-New red-flag categories or Domain Pre-Check flags for uat-plan-hostile-reviewer
-Real-world failure reports (timeouts, weird routing-loop edge cases, or plans that slipped past the reviewer)
-Open an issue describing the failure before submitting big structural PRs — the rigidity is intentional, so changes should extend the pipeline, not loosen it.
+- New domain-specific tuning for deep-research's persona-casting logic
+- New fixed-structure variants (PRD, RFC, etc.) built on the drafting pipeline
+- Sharper MECE / over-engineering detection heuristics
+- New red-flag categories or Domain Pre-Check flags for uat-plan-hostile-reviewer
+- Real-world failure reports (timeouts, weird routing-loop edge cases, or plans that slipped past the reviewer)
+- Open an issue describing the failure before submitting big structural PRs — the rigidity is intentional, so changes should extend the pipeline, not loosen it.
 
-License
+## License
 MIT License — Fork it, ship it, put it to work in your own engagements.
 
 <div align="center">
